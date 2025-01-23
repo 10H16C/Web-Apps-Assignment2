@@ -1,12 +1,16 @@
-const app = require("./src/app");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import app from "./src/app";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3000;
+const PORT: string | number = process.env.PORT || 3000;
+export const MONGO_URL: string = process.env.MONGO_URL || "";
 
-const MONGO_URL = process.env.MONGO_URL;
+if (!MONGO_URL) {
+  console.error("MONGO_URL is not defined in the environment variables.");
+  process.exit(1);
+}
 
 mongoose
   .connect(`${MONGO_URL}/commentsAPI`, {
@@ -19,3 +23,5 @@ mongoose
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+export default app;
