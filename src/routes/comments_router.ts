@@ -1,15 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const {
+import express, { Router } from "express";
+import {
   createComment,
   getComments,
   getCommentsByPost,
   getCommentById,
   updateComment,
   deleteComment,
-} = require("../controllers/comments_controller");
-const { authenticateToken } = require('../middlewares/auth');
+} from "../controllers/comments_controller";
+import { authenticateToken } from "../middlewares/auth";
 
+const router: Router = express.Router();
 
 /**
  * @swagger
@@ -123,4 +123,4 @@ router.put("/:id", authenticateToken, updateComment);
  */
 router.delete("/:id", authenticateToken, deleteComment);
 
-module.exports = router;
+export default router;

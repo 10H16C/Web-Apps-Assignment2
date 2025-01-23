@@ -1,12 +1,18 @@
-const commentsModel = require("../models/comments_model");
+import { Request, Response } from "express";
+import commentsModel from "../models/comments_model";
 
-async function createComment(req, res) {
-  const { postId, author, content } = req.body;
+interface Comment {
+  postId: string;
+  author: string;
+  content: string;
+}
+
+async function createComment(req: Request, res: Response): Promise<void> {
+  const { postId, author, content } = req.body as Comment;
 
   if (!postId || !author || !content) {
-    return res
-      .status(400)
-      .json({ error: "postId, author, and content are required." });
+    res.status(400).json({ error: "postId, author, and content are required." });
+    return;
   }
 
   try {
@@ -18,7 +24,7 @@ async function createComment(req, res) {
   }
 }
 
-async function getComments(req, res) {
+async function getComments(req: Request, res: Response): Promise<void> {
   try {
     const comments = await commentsModel.find();
     res.json(comments);
@@ -27,7 +33,7 @@ async function getComments(req, res) {
   }
 }
 
-async function getCommentsByPost(req, res) {
+async function getCommentsByPost(req: Request, res: Response): Promise<void> {
   const { postId } = req.params;
 
   try {
@@ -38,13 +44,15 @@ async function getCommentsByPost(req, res) {
   }
 }
 
-async function getCommentById(req, res) {
+async function getCommentById(req: Request, res: Response): Promise<void> {
   const { id } = req.params;
+
   try {
     const comment = await commentsModel.findById(id);
 
     if (!comment) {
-      return res.status(404).json({ error: "Comment not found." });
+      res.status(404).json({ error: "Comment not found." });
+      return;
     }
 
     res.json(comment);
@@ -53,14 +61,13 @@ async function getCommentById(req, res) {
   }
 }
 
-async function updateComment(req, res) {
+async function updateComment(req: Request, res: Response): Promise<void> {
   const { id } = req.params;
-  const { postId, author, content } = req.body;
+  const { postId, author, content } = req.body as Comment;
 
   if (!postId || !author || !content) {
-    return res
-      .status(400)
-      .json({ error: "postId, author, and content are required." });
+    res.status(400).json({ error: "postId, author, and content are required." });
+    return;
   }
 
   try {
@@ -71,7 +78,8 @@ async function updateComment(req, res) {
     );
 
     if (!updatedComment) {
-      return res.status(404).json({ error: "Comment not found." });
+      res.status(404).json({ error: "Comment not found." });
+      return;
     }
 
     res.json(updatedComment);
@@ -80,14 +88,15 @@ async function updateComment(req, res) {
   }
 }
 
-async function deleteComment(req, res) {
+async function deleteComment(req: Request, res: Response): Promise<void> {
   const { id } = req.params;
 
   try {
     const deletedComment = await commentsModel.findByIdAndDelete(id);
 
     if (!deletedComment) {
-      return res.status(404).json({ error: "Comment not found." });
+      res.status(404).json({ error: "Comment not found." });
+      return;
     }
 
     res.json(deletedComment);
@@ -96,7 +105,7 @@ async function deleteComment(req, res) {
   }
 }
 
-module.exports = {
+export {
   createComment,
   getComments,
   getCommentsByPost,
